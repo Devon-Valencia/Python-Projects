@@ -2,8 +2,6 @@ import requests
 import sys
 base_url = 'https://api.jikan.moe/v4'
 
-def imports():
-    from utils import common
 
 def search_anime_title(title, page=1):
     
@@ -27,6 +25,7 @@ def search_anime_title(title, page=1):
 
 def display_anime_results(anime_list):
     if anime_list:
+        anime_list = sorted(anime_list, key=lambda x: x['score'] if x.get('score') is not None else 0, reverse=True)
         print(f"\nFound {len(anime_list)} anime(s):\n")
         for idx, anime in enumerate(anime_list, 1):
             print(f"{idx}. {anime.get('title', 'Unknown Title')}")
@@ -62,18 +61,20 @@ def fetch_by_name(title):
             display_anime_results(anime_list)
 
             if pagination.get('has_next_page', False):
-                user_input = input("1. Next, 2. Previous, 3. Quit\n").strip().lower()
+                user_input = input("1. Next, 2. Previous, 3. Return 4. Quit\n").strip().lower()
                 if user_input == '1':
                     page += 1
                 elif user_input == '2' and page > 1:
                     page -= 1
                 elif user_input == '3':
+                    from utils import common
+                    common.return_home()
+                elif user_input == '4':
                     question_input = input('Are you sure?\n')
                     if question_input == 'yes':
                         sys.exit()
                     elif question_input == 'no':
-                        from utils import common
-                        common.return_home()
+                        fetch_by_name(title)
                 else:
                     if user_input == '2' and page == 1:
                         print("Error, you're at the first page.")

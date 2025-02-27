@@ -1,4 +1,4 @@
-from fetchers.fetch_by_genre import fetch_genre
+from fetchers.fetch_by_genre import fetch_by_genre
 from fetchers.fetch_by_name import fetch_by_name
 from utils.random_anime_generator import navigation_function
 from fetchers.fetch_by_type import fetch_by_type
@@ -19,7 +19,7 @@ def main():
         fetch_by_name(anime_title)
     elif user_input == '2':
         anime_genre = input('Enter a genre: ').strip()
-        fetch_genre(anime_genre)
+        fetch_by_genre(anime_genre)
     elif user_input == '3':
         anime_type = input('Enter a type: ').strip()
         fetch_by_type(anime_type)

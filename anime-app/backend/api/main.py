@@ -1,0 +1,51 @@
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from fetchers.fetch_by_genre import display_genre_results
+from fetchers.fetch_by_name import display_name_results
+from fetchers.fetch_by_type import display_type_results
+from fetchers.random_anime_generator import display_anime_on_page
+# from utils.filter_handler import apply_filters
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/")
+def home():
+    """
+    Root route for API health check.
+    """
+    return jsonify({"message": "Welcome to the Anime API"}), 200
+
+@app.route("/anime/random", methods=["GET"])
+def get_random_anime():
+    page = request.args.get("page", default=1, type=int)
+    limit = request.args.get("limit", default=20, type=int)
+    data = display_anime_on_page(page, limit)
+    return jsonify({"page": page, "anime": data})
+
+
+
+
+@app.route("/anime/search", methods=["GET"])
+def search_anime():
+    page = request.args.get("page", default=1, type=int)
+    limit = request.args.get("limit", default=20, type=int)
+    data = display_name_results(page, limit)
+    return jsonify({"page": page, "anime": data})
+
+@app.route("/anime/genre", methods=["GET"])
+def get_anime_by_genre():
+    page = request.args.get("page", default=1, type=int)
+    limit = request.args.get("limit", default=20, type=int)
+    data = display_genre_results(page, limit)
+    return jsonify({"page": page, "anime": data})
+
+@app.route("/anime/type", methods=["GET"])
+def get_anime_by_type():
+    page = request.args.get("page", default=1, type=int)
+    limit = request.args.get("limit", default=20, type=int)
+    data = display_type_results(page, limit)
+    return jsonify({"page": page, "anime": data})
+
+if __name__ == "__main__":
+    app.run(debug=True)

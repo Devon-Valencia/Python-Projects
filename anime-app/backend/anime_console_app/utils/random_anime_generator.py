@@ -39,4 +39,3 @@ def navigation_function():
                    sys.exit() 
                 else:
                     navigation_function()
-

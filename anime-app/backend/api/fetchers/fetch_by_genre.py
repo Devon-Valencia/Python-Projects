@@ -34,19 +34,29 @@ def fetch_genre_data(page=1, limit=20, title=None, genre=None, anime_type=None):
     return apply_filters(title=title, genre=genre, anime_type=anime_type, page=page)
 
 def display_genre_results(page=1, limit=20, title=None, genre="romance", anime_type=None):
+    if isinstance(genre, list) and genre:  
+        genre = genre[0]  # Take the first genre if it's a list
+    
     data = fetch_genre_data(page, limit, title, genre, anime_type)
-    sort_data = sorted(data, key=lambda)
+    
     if data:
+        # Sort genres in each anime so that the search genre appears first
+        for anime in data:
+            genres = anime.get("genres", [])
+            sorted_genres = sorted(genres, key=lambda g: 0 if g.get("name", "").lower() == genre.lower() else 1)
+            anime["genres"] = [g["name"] for g in sorted_genres]  
+
         return [
             {
                 "id": anime["mal_id"],
                 "title": anime["title"],
                 "type": anime.get("type"),
-                "image_url": anime["images"]["jpg"]["image_url"],  # Gets the main anime image
-                "synopsis": anime.get("synopsis", "No synopsis available."),  # Returns synopsis if available
-                "score": anime.get("score", "N/A"),  # Includes score if available
-                "genres": anime.get("genres", [{}])[0].get("name", "N/A")
+                "image_url": anime["images"]["jpg"]["image_url"],  
+                "synopsis": anime.get("synopsis", "No synopsis available."),  
+                "score": anime.get("score", "N/A"),  
+                "genres": anime["genres"] 
             }
             for anime in data
         ]
+    
     return []

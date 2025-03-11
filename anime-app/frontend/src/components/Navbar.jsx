@@ -1,21 +1,39 @@
-import { Box, Container, Flex, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
+import { Box, Flex, Input } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";  // Import useNavigate hook
 
-export const Navbar = () => {
+export const Navbar = ({ onSearch }) => {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();  // Initialize navigate
+
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  // Handle form submission on Enter key press
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();  // Prevent default form submit behavior
+      if (query.trim()) {
+        navigate(`/search?keyword=${query}`);  // Navigate to /search with query parameter
+      }
+    }
+  };
+
   return (
-    <Container maxW={"900px"}>
-      <Box px={4} my={4} borderRadius={5} mt={0}>
-        <Flex h="16" alignItems={"center"} justifyContent="space-between">
-          {/* Left side */}
-          <Flex alignItems={"center"} display={{ base: "none", sm: "flex" }}>
-            <Text style={{fontSize: 20}} fontWeight="bold">
-              Search Anime
-            </Text>
-          </Flex>
-          {/* Right side */}
-          <Flex></Flex>
-        </Flex>
-      </Box>
-    </Container>
+    <Box position="absolute" top={3} left={324} right={0} p={4}>
+      <Flex align="left">
+        <Input
+          placeholder="Search anime..."
+          value={query}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}  // Add keyDown event
+          width="450px"
+          border="1px solid gray"
+          borderRadius="md"
+          p={2}
+        />
+      </Flex>
+    </Box>
   );
 };

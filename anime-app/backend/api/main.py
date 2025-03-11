@@ -24,13 +24,12 @@ def get_random_anime():
     return jsonify({"page": page, "anime": data})
 
 
-
-
 @app.route("/anime/search", methods=["GET"])
 def search_anime():
+    query = request.args.get("q", default="", type=str)  
     page = request.args.get("page", default=1, type=int)
     limit = request.args.get("limit", default=20, type=int)
-    data = display_name_results(page, limit)
+    data = display_name_results(query, page, limit)  
     return jsonify({"page": page, "anime": data})
 
 @app.route("/anime/genre", methods=["GET"])

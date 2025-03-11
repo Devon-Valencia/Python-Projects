@@ -1,21 +1,22 @@
-import { Box, Container, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import React from "react";
 
 export const AniQuestHeader = () => {
   return (
-    <Container maxW={"900px"}>
-      <Box px={4} my={5} borderRadius={5}>
-        <Flex h="20" alignItems={"center"} justifyContent="space-between">
-          {/* Left side */}
-          <Flex alignItems={"center"} display={{ base: "none", sm: "flex" }}>
-            <Text style={{fontSize: 50}} fontWeight="bold">
-                AniQuest
-            </Text>
-          </Flex>
-          {/* Right side */}
-          <Flex></Flex>
-        </Flex>
-      </Box>
-    </Container>
+    <Box position="absolute" top={0} left={150} p={4} bottom={10}>
+      <Flex align="left">
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <Text
+            fontSize="35px"
+            fontWeight="bold"
+            cursor="pointer"
+            _hover={{ color: "blue.500" }}
+          >
+            AniQuest
+          </Text>
+        </Link>
+      </Flex>
+    </Box>
   );
 };

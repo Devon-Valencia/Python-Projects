@@ -10,18 +10,8 @@ def fetch_name_data(page=1, limit=20, title=None, genre=None, anime_type=None):
     data = apply_filters(title=title, genre=genre, anime_type=anime_type, page=page)
     return data
 
-def display_name_results(page=1, limit=20, title=None, genre=None, anime_type=None):
-    data = fetch_name_data(page, limit, title, genre, anime_type)
-    if data:
-        return [
-            {
-                "id": anime["mal_id"],
-                "title": anime["title"],
-                "type": anime.get("type"),
-                "image_url": anime["images"]["jpg"]["image_url"],  # Gets the main anime image
-                "synopsis": anime.get("synopsis", "No synopsis available."),  # Returns synopsis if available
-                "score": anime.get("score", "N/A"),  # Includes score if available
-            }
-            for anime in data
-        ]
-    return []
+def display_name_results(query, page=1, limit=20):
+    JIKAN_API_URL = f"https://api.jikan.moe/v4/anime"
+    
+    response = requests.get(f"{JIKAN_API_URL}?q={query}&page={page}&limit={limit}")
+    return response.json().get("data", [])  # Get the filtered results

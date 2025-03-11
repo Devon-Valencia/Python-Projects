@@ -14,7 +14,9 @@ def apply_filters(title=None, genre=None, anime_type=None, page=1):
         params['genres'] = genre
     if anime_type:
         params['type'] = anime_type
+
     params['page'] = page
+  
     
     response = requests.get(base_url, params=params)
     return response.json().get('data', []) if response.status_code == 200 else []

@@ -4,7 +4,7 @@ import React from "react";
 
 export const AniQuestHeader = () => {
   return (
-    <Box position="absolute" top={0} left={150} p={4} bottom={10}>
+    <Box position="absolute" top={0} left={320} p={4} bottom={10}>
       <Flex align="left">
         <Link to="/" style={{ textDecoration: "none" }}>
           <Text

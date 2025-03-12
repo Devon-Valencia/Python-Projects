@@ -21,7 +21,7 @@ export const Navbar = ({ onSearch }) => {
   };
 
   return (
-    <Box position="absolute" top={3} left={324} right={0} p={4}>
+    <Box position="absolute" top={3} left={500} right={0} p={4}>
       <Flex align="left">
         <Input
           placeholder="Search anime..."

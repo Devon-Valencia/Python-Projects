@@ -35,7 +35,7 @@ function App() {
   }, [searchQuery]);
 
   return (
-    <Stack minH={"100vh"}>
+    <Stack minH={"100px"}>
       <AniQuestHeader />
       <Navbar onSearch={handleSearch} />
       <AnimeResults animeResults={animeResults} loading={loading} />

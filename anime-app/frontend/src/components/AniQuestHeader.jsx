@@ -11,7 +11,8 @@ export const AniQuestHeader = () => {
             fontSize="35px"
             fontWeight="bold"
             cursor="pointer"
-            _hover={{ color: "blue.500" }}
+            color="purple.500"
+            _hover={{ color: "white" }}
           >
             AniQuest
           </Text>

@@ -1,18 +1,33 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { AniQuestHeader } from "./AniQuestHeader";  // Import your header
-import { AnimeResults } from "./AnimeResults";  // Import AnimeResults
+import { Route, Routes } from "react-router-dom";  
+import { AniQuestHeader } from "./AniQuestHeader"; 
+import { AnimeResults } from "./AnimeResults"; 
+import { Navbar } from "./Navbar"; 
+import { Text } from "@chakra-ui/react";
 
-const App = () => {
+const Routing = () => {
   return (
-    <Router>
+    <>
       <AniQuestHeader />
+      <Navbar /> 
       <Routes>
-        <Route path="/" element={<h1>Welcome to AniQuest</h1>} /> {/* Home Page */}
-        <Route path="/search" element={<AnimeResults />} /> {/* Search Results Page */}
+      <Route 
+          path="/" 
+          element={
+            <Text 
+              fontSize="4xl"  
+              fontWeight="bold"  
+              textAlign="center"  
+              color="purple.500"  
+              mt={20}  
+            >
+              Welcome to AniQuest
+            </Text>
+          }
+        /><Route path="/search" element={<AnimeResults />} />
       </Routes>
-    </Router>
+    </>
   );
 };
 
-export default App;
+export default Routing;

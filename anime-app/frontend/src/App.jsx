@@ -5,6 +5,8 @@ import { AniQuestHeader } from "./components/AniQuestHeader";
 import { AnimeResults } from "./components/AnimeResults";
 import axios from "axios";
 import Trolleydisplay from "./components/Trolleydisplay";
+import Routing from "./components/Routing"; 
+import { useLocation } from "react-router-dom";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,10 +39,8 @@ function App() {
 
   return (
     <Stack minH={"100px"} spacing={8}>
-      <AniQuestHeader />
-      <Navbar onSearch={handleSearch} />
-      <Trolleydisplay/>
-      <AnimeResults animeResults={animeResults} loading={loading} />
+      <Routing />
+      {location.pathname !== "" && <Trolleydisplay />} 
     </Stack>
   );
 }

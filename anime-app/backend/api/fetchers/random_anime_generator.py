@@ -27,7 +27,8 @@ def display_anime_on_page(page=1, limit=20):
                 "title": anime["title"],
                 "image_url": anime["images"]["jpg"]["image_url"],  # Gets the main anime image
                 "synopsis": anime.get("synopsis", "No synopsis available."),  # Returns synopsis if available
-                "score": anime.get("score", "N/A")  # Includes score if available
+                "score": anime.get("score", "N/A"),
+                "type": anime.get("type")
             } for anime in anime_list
         ]
     return []

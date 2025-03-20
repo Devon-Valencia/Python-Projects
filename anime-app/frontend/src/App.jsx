@@ -4,6 +4,7 @@ import { Navbar } from "./components/Navbar";
 import { AniQuestHeader } from "./components/AniQuestHeader";
 import { AnimeResults } from "./components/AnimeResults";
 import axios from "axios";
+import Trolleydisplay from "./components/Trolleydisplay";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,9 +36,10 @@ function App() {
   }, [searchQuery]);
 
   return (
-    <Stack minH={"100px"}>
+    <Stack minH={"100px"} spacing={8}>
       <AniQuestHeader />
       <Navbar onSearch={handleSearch} />
+      <Trolleydisplay/>
       <AnimeResults animeResults={animeResults} loading={loading} />
     </Stack>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Heading, Button, Flex } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { AniQuestHeader } from './AniQuestHeader';
 import { Navbar } from './Navbar';
 import Hamburgermenu from './Hamburgermenu';

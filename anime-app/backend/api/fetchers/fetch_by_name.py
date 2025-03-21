@@ -14,4 +14,4 @@ def display_name_results(query, page=1, limit=20):
     JIKAN_API_URL = f"https://api.jikan.moe/v4/anime"
     
     response = requests.get(f"{JIKAN_API_URL}?q={query}&page={page}&limit={limit}")
-    return response.json().get("data", [])  # Get the filtered results
+    return response.json().get("data", [])

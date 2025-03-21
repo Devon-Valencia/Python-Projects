@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Image, Spinner, Text } from "@chakra-ui/react";
-import { Splide, SplideSlide, SplideTrack } from '@splidejs/react-splide';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { AutoScroll } from '@splidejs/splide-extension-auto-scroll';
 import '@splidejs/react-splide/css/skyblue';
 import '/index.css'; 

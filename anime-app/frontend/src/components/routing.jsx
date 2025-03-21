@@ -1,8 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";  
-import { AniQuestHeader } from "./Header/AniQuestHeader.jsx"; 
-import { AnimeResults } from "./AnimeResults"; 
-import { Navbar } from "./Header/Navbar.jsx"; 
+import { AnimeResults } from "./animeresults.jsx"; 
 import { Text } from "@chakra-ui/react";
 import Trolleydisplay from "./Trolleydisplay";
 import Header from "./Header/Header.jsx";

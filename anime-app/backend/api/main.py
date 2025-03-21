@@ -4,16 +4,14 @@ from fetchers.fetch_by_genre import display_genre_results
 from fetchers.fetch_by_name import display_name_results
 from fetchers.fetch_by_type import display_type_results
 from fetchers.random_anime_generator import display_anime_on_page
-# from utils.filter_handler import apply_filters
+
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route("/")
 def home():
-    """
-    Root route for API health check.
-    """
+
     return jsonify({"message": "Welcome to the Anime API"}), 200
 
 @app.route("/anime/random", methods=["GET"])
@@ -36,8 +34,11 @@ def search_anime():
 def get_anime_by_genre():
     page = request.args.get("page", default=1, type=int)
     limit = request.args.get("limit", default=20, type=int)
-    data = display_genre_results(page, limit)
+    genre = request.args.get("genre", type=str)
+    data = display_genre_results(page, limit, genre=genre)  
     return jsonify({"page": page, "anime": data})
+
+
 
 @app.route("/anime/type", methods=["GET"])
 def get_anime_by_type():

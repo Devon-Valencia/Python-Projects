@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import React from "react";
 

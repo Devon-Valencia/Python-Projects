@@ -6,12 +6,12 @@ import Hamburgermenu from './Hamburgermenu';
 
 const Header = () => {
   return (
-    <Box bg="#152232" p={10}>
-      <Flex align="center">
+    <Box bg="#152232" p={9}  >
+      <Box position="fixed">
         <Hamburgermenu />
-        <AniQuestHeader/>
         <Navbar/>
-      </Flex>
+        <AniQuestHeader/>
+      </Box>
     </Box>
   );
 };

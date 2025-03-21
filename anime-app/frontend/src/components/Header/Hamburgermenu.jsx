@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { Squash as Hamburger } from 'hamburger-react';
 import { Box, Button, VStack} from "@chakra-ui/react";
+import { useNavigate } from 'react-router-dom';
 
 function Hamburgermenu() {
-  const [isOpen, setOpen] = useState(false);
-
+    const [isOpen, setOpen] = useState(false);
+    const navigate = useNavigate();
   return (
     <div>
-        <Box position="absolute" top={-.5} left="2vh" p={3} bottom={10}>
+        <Box position="fixed" top='-.5%' left="1%" p={3}>
             <Hamburger size={30} duration={0} toggled={isOpen} toggle={setOpen} />
             {isOpen && (
                 <VStack
-                position="absolute"
-                left="-27px"
+                position="fixed"
+                left="-10px"
                 top="0px"
                 bg="rgba(128, 128, 128, 0.2)" 
                 backdropFilter="blur(10px)"
@@ -24,8 +25,10 @@ function Hamburgermenu() {
                 >
                 <Button variant="ghost" width="100%" onClick={() => setOpen(false)}
                     fontSize={'14px'} fontFamily='Montserrat' display="flex" justifyContent="flex-start">{"<"}&nbsp;&nbsp;&nbsp;Close menu</Button>
-                <Button variant="ghost" width="100%" fontWeight={'bold'} onClick={() => setOpen(false)}
-                    fontSize={'14px'} fontFamily='Montserrat' display="flex" top="5vh" justifyContent="flex-start">Home</Button>
+                    <Button variant="ghost" width="100%" fontWeight="bold" onClick={() => {
+                        navigate("/"); setOpen(false); }} fontSize="14px"fontFamily="Montserrat" display="flex"
+                        top="5vh" justifyContent="flex-start" _focus={{ boxShadow: "none" }} _hover={{ textDecoration: "none" }}>Home
+                    </Button>
                 <Button variant="ghost" width="100%" fontWeight={'bold'} onClick={() => setOpen(false)}
                     fontSize={'14px'} fontFamily='Montserrat' display="flex" top="5vh" justifyContent="flex-start">About</Button>
                 <Button variant="ghost" width="100%" fontWeight={'bold'} onClick={() => setOpen(false)}

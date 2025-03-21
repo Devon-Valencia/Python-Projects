@@ -4,17 +4,18 @@ import React from "react";
 
 export const AniQuestHeader = () => {
   return (
-    <Box position="absolute" top={0} left={320} p={4} bottom={10}>
+    <Box position="absolute" top={-2.5} left="21vh" p={3} bottom={10}>
       <Flex align="left">
         <Link to="/" style={{ textDecoration: "none" }}>
           <Text
-            fontSize="35px"
+            fontSize="40px"
             fontWeight="bold"
             cursor="pointer"
-            color="purple.500"
             _hover={{ color: "white" }}
+            textAlign={"center"}
           >
-            AniQuest
+            <span style={{color: '#03a9fe'}}>Ani</span>
+            <span style={{color: 'white'}}>Quest</span>
           </Text>
         </Link>
       </Flex>

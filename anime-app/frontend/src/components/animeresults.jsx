@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
 import { Container, Flex, Image, Text } from "@chakra-ui/react";
-import { useLocation } from "react-router-dom";  // Import useLocation hook to access query parameters
+import { useLocation } from "react-router-dom";  
 
 export const AnimeResults = () => {
-  const location = useLocation();  // Get location object with query parameters
-  const queryParams = new URLSearchParams(location.search);  // Parse query parameters
-  const query = queryParams.get("keyword");  // Get the "keyword" parameter
-
+  const location = useLocation();  
+  const queryParams = new URLSearchParams(location.search); 
+  const query = queryParams.get("keyword");  
   const [animeResults, setAnimeResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch anime results based on the query
   useEffect(() => {
-    if (!query) return;  // If no query, do nothing
+    if (!query) return;  
 
     const fetchAnimeResults = async () => {
       setLoading(true);
@@ -24,7 +22,15 @@ export const AnimeResults = () => {
         const data = await response.json();
 
         if (data && data.data) {
-          setAnimeResults(data.data);
+          const formattedResults = data.data.map((anime) => {
+            const englishTitle = anime.titles.find((title) => title.type === "English")?.title || anime.title;
+            return {
+              ...anime,
+              english_title: englishTitle,
+              image_url: anime.images?.jpg?.image_url,
+            };
+          });
+          setAnimeResults(formattedResults);
         } else {
           setError("No results found.");
         }
@@ -36,9 +42,8 @@ export const AnimeResults = () => {
     };
 
     fetchAnimeResults();
-  }, [query]);  // Re-run when query changes
+  }, [query]);  
 
-  // Return component
   return (
     <Container maxW="1400px" my={4} top={100}>
       {!query ? (
@@ -54,15 +59,15 @@ export const AnimeResults = () => {
             {animeResults.map((anime) => (
               <Flex key={anime.mal_id} direction="column" align="center">
                 <Image
-                  src={anime.images?.jpg?.image_url} 
-                  alt={anime.title}
+                  src={anime.image_url} 
+                  alt={anime.english_title}
                   boxSize="300px"
                   objectFit="cover"
                   cursor="pointer"
                   borderRadius="20px"
                 />
                 <Text mt={2} fontSize="sm" fontWeight="bold" textAlign="center" maxW="200px" wordBreak="break-word">
-                  {anime.title}
+                  {anime.english_title}
                 </Text>
               </Flex>
             ))}

@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Box, Image, Spinner, Text } from "@chakra-ui/react";
 import { Splide, SplideSlide, SplideTrack } from '@splidejs/react-splide';
 import { AutoScroll } from '@splidejs/splide-extension-auto-scroll';
-import '@splidejs/splide/dist/css/splide.min.css';
+import '@splidejs/react-splide/css/skyblue';
+import '/index.css'; 
 
 const Trolleydisplay = () => {
-  const [imageUrl, setImageUrl] = useState([]);
+  const [animeData, setAnimeData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -19,7 +20,7 @@ const Trolleydisplay = () => {
         })
         .then((data) => {
             if (data.anime && data.anime.length > 0) {
-                setImageUrl(data.anime.map((anime) => anime.image_url));
+                setAnimeData(data.anime);
             } else {
                 setError(true);
             }
@@ -28,48 +29,60 @@ const Trolleydisplay = () => {
         .finally(() => setLoading(false));
   }, []);
 
-    return(
-          <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
-              <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "45vh", 
-                          width: "140vh", backgroundColor: "rgba(128, 128, 128, 0.5)", borderRadius: "30px"}}>
-                  <Splide 
-                    options={{
-                        type: "loop",
-                        drag: "free",
-                        focus: "center",
-                        gap: '1rem',
-                        perPage: 3,
-                        width: '70em',
-                        autoHeight: false,
-                        pagination: false,
-                        arrows: false,
-                        speed: 2000, 
-                        autoplay: true,
-                        pauseOnHover: true,
-                        pauseOnFocus: false,
-                        snap: true,
-                        perMove: 1, 
-                        extensions: { AutoScroll },
-                        autoScroll: {
-                            speed: 200, 
-                            pauseOnHover: true,
-                            pauseOnFocus: false,
-                        },
-                    }}
-                  >
-                  <Box>
-                    {loading && <Spinner size="xl" />}
-                    {error && <Text color="red.500">Failed to load image</Text>}
-                  </Box>
-                  {imageUrl.map((url, index) => (
-                    <SplideSlide key={index}>
-                      <img src={url} alt={`Anime ${index}`} style={{ width: '285px', height: '275px' }} />
-                    </SplideSlide>
-                    ))}
-              </Splide>
-              </div>
-          </div>
-    )
-  }
+  return(
+    <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "60vh"}}>
+      <div style={{
+        display: "flex", justifyContent: "center", alignItems: "center", height: "45vh",
+        width: "140vh", backgroundColor: "rgba(128, 128, 128, 0.5)",  borderRadius: "20px",  border: "3px solid #03a9fe" 
+      }}>
+        <Splide 
+          options={{
+            type: "loop",
+            drag: "free",
+            focus: "center",
+            gap: '1rem',
+            perPage: 4,
+            width: '70em',
+            autoHeight: false,
+            pagination: false,
+            arrows: true,
+            speed: 2000, 
+            autoplay: true,
+            pauseOnHover: true,
+            pauseOnFocus: false,
+            snap: true,
+            perMove: 1, 
+            extensions: { AutoScroll },
+            autoScroll: {
+              speed: 200, 
+              pauseOnHover: true,
+              pauseOnFocus: false,
+            },
+            waitForTransition: false,
+            updateOnMove: true,
+            resetProgress: false, 
+          }}
+        >
+          
+          <Box>
+            {loading && <Spinner size="xl" />}
+            {error && <Text color="red.500">Failed to load data</Text>}
+          </Box>
+          {animeData.map((anime, index) => (
+            <SplideSlide key={index}>
+              <img 
+                src={anime.image_url} 
+                alt={`Anime ${index}`} 
+                style={{ width: '200px', height: '275px' }} 
+              />
+              <Text fontSize="md" fontWeight="bold" mt={2}>{anime.title}</Text>
+              <Text fontSize="sm" color="yellow.200">⭐ {anime.score} </Text>
+            </SplideSlide>
+          ))}
+        </Splide>
+      </div>
+    </div>
+  );
+}
 
 export default Trolleydisplay;

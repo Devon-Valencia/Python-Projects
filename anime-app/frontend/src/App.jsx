@@ -1,20 +1,19 @@
-import { Stack } from "@chakra-ui/react";
+import { Stack, Box } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { Navbar } from "./components/Navbar";
-import { AniQuestHeader } from "./components/AniQuestHeader";
-import { AnimeResults } from "./components/AnimeResults";
 import axios from "axios";
-import Trolleydisplay from "./components/Trolleydisplay";
 import Routing from "./components/Routing"; 
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import '/index.css'; 
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [animeResults, setAnimeResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSearch = (query) => {
     setSearchQuery(query);
+    navigate("/search");
   };
 
   useEffect(() => {
@@ -38,11 +37,11 @@ function App() {
   }, [searchQuery]);
 
   return (
-    <Stack minH={"100px"} spacing={8}>
-      <Routing />
-      {location.pathname !== "" && <Trolleydisplay />} 
-    </Stack>
+    <Box backgroundColor="#0b1622" minHeight="100vh">
+      <Stack minH={"100vh"} spacing={8}>
+        <Routing />
+      </Stack>
+    </Box>
   );
 }
-
 export default App;

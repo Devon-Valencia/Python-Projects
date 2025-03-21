@@ -1,15 +1,16 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";  
-import { AniQuestHeader } from "./AniQuestHeader"; 
+import { AniQuestHeader } from "./Header/AniQuestHeader.jsx"; 
 import { AnimeResults } from "./AnimeResults"; 
-import { Navbar } from "./Navbar"; 
+import { Navbar } from "./Header/Navbar.jsx"; 
 import { Text } from "@chakra-ui/react";
+import Trolleydisplay from "./Trolleydisplay";
+import Header from "./Header/Header.jsx";
 
 const Routing = () => {
   return (
     <>
-      <AniQuestHeader />
-      <Navbar /> 
+      <Header/>
       <Routes>
       <Route 
           path="/" 
@@ -18,14 +19,15 @@ const Routing = () => {
               fontSize="4xl"  
               fontWeight="bold"  
               textAlign="center"  
-              color="purple.500"  
-              mt={20}  
+              color="white"  
+              mt='10vh'
             >
               Welcome to AniQuest
             </Text>
           }
         /><Route path="/search" element={<AnimeResults />} />
       </Routes>
+      {location.pathname === "/" && <Trolleydisplay />}
     </>
   );
 };

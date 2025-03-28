@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from fetchers.fetch_by_genre import display_genre_results
 from fetchers.fetch_by_name import display_name_results
-from fetchers.fetch_by_type import display_type_results
+from fetchers.fetch_by_type import display_type_data
 from fetchers.random_anime_generator import display_anime_on_page
 
 
@@ -16,10 +16,9 @@ def home():
 
 @app.route("/anime/random", methods=["GET"])
 def get_random_anime():
-    page = request.args.get("page", default=1, type=int)
-    limit = request.args.get("limit", default=20, type=int)
-    data = display_anime_on_page(page, limit)
-    return jsonify({"page": page, "anime": data})
+    limit = 20  
+    anime_data = display_anime_on_page(limit)  
+    return jsonify(anime_data)
 
 
 @app.route("/anime/search", methods=["GET"])
@@ -44,7 +43,7 @@ def get_anime_by_genre():
 def get_anime_by_type():
     page = request.args.get("page", default=1, type=int)
     limit = request.args.get("limit", default=20, type=int)
-    data = display_type_results(page, limit)
+    data = display_type_data(page, limit)
     return jsonify({"page": page, "anime": data})
 
 if __name__ == "__main__":

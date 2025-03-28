@@ -1,16 +1,18 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";  
-import { AnimeResults } from "./animeresults.jsx"; 
+import { Route, Routes, useLocation } from "react-router-dom";  
+import AnimeResults from "./animeresults.jsx"; 
 import { Text } from "@chakra-ui/react";
 import Trolleydisplay from "./Trolleydisplay";
 import Header from "./Header/Header.jsx";
 
 const Routing = () => {
+  const location = useLocation();
+
   return (
     <>
       <Header/>
       <Routes>
-      <Route 
+        <Route 
           path="/" 
           element={
             <Text 
@@ -18,12 +20,13 @@ const Routing = () => {
               fontWeight="bold"  
               textAlign="center"  
               color="white"  
-              mt='10vh'
+              mt="10vh"
             >
               Welcome to AniQuest
             </Text>
           }
-        /><Route path="/search" element={<AnimeResults />} />
+        />
+        <Route path="/search" element={<AnimeResults />} />
       </Routes>
       {location.pathname === "/" && <Trolleydisplay />}
     </>

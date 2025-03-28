@@ -3,7 +3,7 @@ import requests
 # 📌 Filter Handler (Used for dynamic filtering in API calls)
 base_url = 'https://api.jikan.moe/v4/anime'
 
-def apply_filters(title=None, genre=None, anime_type=None, page=1):
+def apply_filters(title=None, genre=None, anime_type=None, episodes=None, page=1):
     """
     Applies multiple filters to fetch anime dynamically.
     """
@@ -14,6 +14,8 @@ def apply_filters(title=None, genre=None, anime_type=None, page=1):
         params['genres'] = genre
     if anime_type:
         params['type'] = anime_type
+    if episodes:
+        params['episodes'] = episodes
 
     params['page'] = page
   

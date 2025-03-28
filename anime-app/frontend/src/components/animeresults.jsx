@@ -1,132 +1,143 @@
-import { useState, useEffect } from "react";
-import { Container, Flex, Image, Text } from "@chakra-ui/react";
+import { Container, Flex, Image, Text, Button } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
+// Fetch genres list from Jikan API
+const fetchGenres = async () => {
+  const response = await fetch("https://api.jikan.moe/v4/genres/anime");
+  const data = await response.json();
+  return data.data;
+};
+
+// Fetch anime results based on search query
+const fetchAnimeResults = async ({ queryKey }) => {
+  const [, query, filterBy, genreList, page] = queryKey;
+  if (!query) return [];
+
+  // Ensure the query is formatted correctly
+  const formattedQuery = query.toLowerCase();
+
+  let apiUrl = `https://api.jikan.moe/v4/anime?q=${formattedQuery}&order_by=score&sort=desc&page=${page}`;
+
+  if (filterBy === "genre") {
+    const genre = genreList?.find((g) => g.name.toLowerCase() === formattedQuery);
+    if (!genre) throw new Error(`Genre "${query}" not found.`);
+    apiUrl = `https://api.jikan.moe/v4/anime?genres=${genre.mal_id}&order_by=score&sort=desc&page=${page}`;
+  } else if (filterBy === "type") {
+    // Ensure only valid types are passed
+    const validTypes = ["tv", "movie", "ova", "special", "ona", "music"];
+    if (!validTypes.includes(formattedQuery)) {
+      throw new Error(`Invalid type "${query}". Valid types: ${validTypes.join(", ")}`);
+    }
+    apiUrl = `https://api.jikan.moe/v4/anime?type=${formattedQuery}&order_by=score&sort=desc&page=${page}`;
+  }
+
+  console.log("Fetching data from API:", apiUrl); // Debugging
+
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+
+  console.log("API Response:", data); // Debugging
+
+  if (!data.data || data.data.length === 0) {
+    throw new Error("No results found.");
+  }
+
+  return {
+    results: data.data.map((anime, index) => ({
+      unique_id: `${anime.mal_id}-${index}`,
+      mal_id: anime.mal_id,
+      english_title: anime.titles.find((title) => title.type === "English")?.title || anime.title,
+      image_url: anime.images?.jpg?.image_url,
+      score: anime.score || "N/A",
+      type: anime.type, // Added type field
+    })),
+    totalPages: data.pagination?.last_visible_page || 1,
+  };
+};
+
+// Main component for displaying anime results
 export const AnimeResults = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("keyword");
   const filterBy = queryParams.get("filter") || "name";
+  const [page, setPage] = useState(1);
 
-  const [animeResults, setAnimeResults] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [genreList, setGenreList] = useState([]);
+  const { data: genreList = [] } = useQuery({
+    queryKey: ["genres"],
+    queryFn: fetchGenres,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+  });
 
-  useEffect(() => {
-    const fetchGenres = async () => {
-      try {
-        const response = await fetch("https://api.jikan.moe/v4/genres/anime");
-        const data = await response.json();
-        if (data.data) {
-          setGenreList(data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching genres:", error);
-      }
-    };
-    fetchGenres();
-  }, []);
-
-  useEffect(() => {
-    if (!query) return;
-
-    const fetchAnimeResults = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        let apiUrl = `https://api.jikan.moe/v4/anime?q=${query}&order_by=score&sort=desc&page=1`;
-
-        if (filterBy === "genre") {
-          const genre = genreList.find((g) => g.name.toLowerCase() === query.toLowerCase());
-
-          if (!genre) {
-            setError(`Genre "${query}" not found.`);
-            setAnimeResults([]);
-            setLoading(false);
-            return;
-          } else {
-            setError(null);
-          }
-
-          apiUrl = `https://api.jikan.moe/v4/anime?genres=${genre.mal_id}&order_by=score&sort=desc&page=1`;
-        } else if (filterBy === "type") {
-          apiUrl = `https://api.jikan.moe/v4/anime?type=${query}&order_by=score&sort=desc&page=1`;
-        }
-
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        if (data && data.data.length > 0) {
-          const formattedResults = data.data.map((anime) => ({
-            ...anime,
-            english_title: anime.titles.find((title) => title.type === "English")?.title || anime.title,
-            image_url: anime.images?.jpg?.image_url,
-            score: anime.score || "N/A",
-          }));
-          setAnimeResults(formattedResults);
-          setError(null);
-        } else {
-          setError("No results found.");
-          setAnimeResults([]);
-        }
-      } catch (error) {
-        setError("An error occurred while fetching data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAnimeResults();
-  }, [query, filterBy, genreList]);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["anime", query, filterBy, genreList, page],
+    queryFn: fetchAnimeResults,
+    enabled: !!query,
+  });
 
   return (
-    <Container maxW="1400px" my={4} top={100}>
+    <Container maxW="1400px" my={4} pt={20}>
       {!query ? (
-        <Text textAlign="center">
-          Welcome to AniQuest! Search for your favorite anime above.
-        </Text>
+        <Text textAlign="center">Welcome to AniQuest! Search for your favorite anime above.</Text>
       ) : (
         <>
-          {loading && <Text textAlign="center">Loading...</Text>}
-          {error && (
-            <Text textAlign="center" color="red.500">
-              {error}
-            </Text>
-          )}
-          {!loading && !error && animeResults.length === 0 && (
+          {isLoading && <Text textAlign="center">Loading...</Text>}
+          {error && <Text textAlign="center" color="red.500">{error.message}</Text>}
+          {!isLoading && !error && data?.results.length === 0 && (
             <Text textAlign="center">No results found for "{query}"</Text>
           )}
-          <Flex wrap="wrap" gap={4} justify="center">
-            {animeResults.map((anime) => (
-              <Flex key={anime.mal_id} direction="column" align="center">
+          <Flex wrap="wrap" gap={2} justify="center" mt={4}>
+            {data?.results.map((anime) => (
+              <Flex
+                key={anime.unique_id}
+                direction="column"
+                align="center"
+                w="250px"
+                minH="400px"
+                p={3}
+                borderRadius="20px"
+                boxShadow="md"
+                border="2px solid"
+                borderColor="gray.700"
+              >
                 <Image
                   src={anime.image_url}
                   alt={anime.english_title}
-                  boxSize="300px"
+                  boxSize="250px"
                   objectFit="cover"
-                  cursor="pointer"
-                  borderRadius="20px"
+                  borderRadius="10px"
                 />
-                <Text
-                  mt={2}
-                  fontSize="sm"
-                  fontWeight="bold"
-                  textAlign="center"
-                  maxW="200px"
-                  wordBreak="break-word"
-                >
+                <Text fontSize="lg" textAlign="center" mt={2} color="blue.400">
                   {anime.english_title}
                 </Text>
-                <Text fontSize="sm" color="gray.500" mt={1}>
+                <Text fontSize="md" color="white" mt={1}>
                   ⭐ {anime.score}
+                </Text>
+                <Text fontSize="md" color="white">
+                  {anime.type}
                 </Text>
               </Flex>
             ))}
           </Flex>
+
+          {data?.results.length > 0 && (
+            <Flex justify="center" mt={6} gap={4}>
+              <Button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} isDisabled={page === 1}>
+                Previous
+              </Button>
+              <Text fontSize="md">Page {page} of {data.totalPages}</Text>
+              <Button onClick={() => setPage((prev) => (prev < data.totalPages ? prev + 1 : prev))} isDisabled={page >= data.totalPages}>
+                Next
+              </Button>
+            </Flex>
+          )}
         </>
       )}
     </Container>
   );
 };
+
+export default AnimeResults;

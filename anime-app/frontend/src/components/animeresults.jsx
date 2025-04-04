@@ -2,22 +2,19 @@ import { Container, Flex, Image, Text, Button } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import AnimePopup from "./AnimePopup"; // Import AnimePopup
 
-// Fetch genres list from Jikan API
 const fetchGenres = async () => {
   const response = await fetch("https://api.jikan.moe/v4/genres/anime");
   const data = await response.json();
   return data.data;
 };
 
-// Fetch anime results based on search query
 const fetchAnimeResults = async ({ queryKey }) => {
   const [, query, filterBy, genreList, page] = queryKey;
   if (!query) return [];
 
-  // Ensure the query is formatted correctly
   const formattedQuery = query.toLowerCase();
-
   let apiUrl = `https://api.jikan.moe/v4/anime?q=${formattedQuery}&order_by=score&sort=desc&page=${page}`;
 
   if (filterBy === "genre") {
@@ -25,7 +22,6 @@ const fetchAnimeResults = async ({ queryKey }) => {
     if (!genre) throw new Error(`Genre "${query}" not found.`);
     apiUrl = `https://api.jikan.moe/v4/anime?genres=${genre.mal_id}&order_by=score&sort=desc&page=${page}`;
   } else if (filterBy === "type") {
-    // Ensure only valid types are passed
     const validTypes = ["tv", "movie", "ova", "special", "ona", "music"];
     if (!validTypes.includes(formattedQuery)) {
       throw new Error(`Invalid type "${query}". Valid types: ${validTypes.join(", ")}`);
@@ -33,12 +29,9 @@ const fetchAnimeResults = async ({ queryKey }) => {
     apiUrl = `https://api.jikan.moe/v4/anime?type=${formattedQuery}&order_by=score&sort=desc&page=${page}`;
   }
 
-  console.log("Fetching data from API:", apiUrl); // Debugging
-
+  console.log("Fetching data from API:", apiUrl);
   const response = await fetch(apiUrl);
   const data = await response.json();
-
-  console.log("API Response:", data); // Debugging
 
   if (!data.data || data.data.length === 0) {
     throw new Error("No results found.");
@@ -48,22 +41,26 @@ const fetchAnimeResults = async ({ queryKey }) => {
     results: data.data.map((anime, index) => ({
       unique_id: `${anime.mal_id}-${index}`,
       mal_id: anime.mal_id,
+      title: anime.title,
       english_title: anime.titles.find((title) => title.type === "English")?.title || anime.title,
       image_url: anime.images?.jpg?.image_url,
       score: anime.score || "N/A",
-      type: anime.type, // Added type field
+      episodes: anime.episodes || "Unknown",
+      status: anime.status || "Unknown",
+      synopsis: anime.synopsis || "No synopsis available.",
+      type: anime.type,
     })),
     totalPages: data.pagination?.last_visible_page || 1,
   };
 };
 
-// Main component for displaying anime results
 export const AnimeResults = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("keyword");
   const filterBy = queryParams.get("filter") || "name";
   const [page, setPage] = useState(1);
+  const [selectedAnime, setSelectedAnime] = useState(null);
 
   const { data: genreList = [] } = useQuery({
     queryKey: ["genres"],
@@ -102,6 +99,9 @@ export const AnimeResults = () => {
                 boxShadow="md"
                 border="2px solid"
                 borderColor="gray.700"
+                cursor="pointer"
+                onClick={() => setSelectedAnime(anime)} // Open popup when clicked
+                _hover={{ bg: "gray.700" }}
               >
                 <Image
                   src={anime.image_url}
@@ -133,6 +133,14 @@ export const AnimeResults = () => {
                 Next
               </Button>
             </Flex>
+          )}
+
+          
+          {selectedAnime && (
+            <AnimePopup 
+              anime={selectedAnime} 
+              closePopup={() => setSelectedAnime(null)}
+            />
           )}
         </>
       )}

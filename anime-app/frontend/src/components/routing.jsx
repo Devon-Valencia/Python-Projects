@@ -7,8 +7,6 @@ import Header from "./Header/Header.jsx";
 import AboutAni from "./aboutAni.jsx";
 
 const Routing = () => {
-  const location = useLocation();
-
   return (
     <>
     <Header />
